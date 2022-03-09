@@ -1,0 +1,67 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+
+.frontierco_page{
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #D2A04A;
+    background-color: #fff;
+}
+
+.frontierco_page_header{
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #D2A04A;
+}
+
+.frontierco_page_header h2{
+    margin: 0;
+    font-size: 30px;
+    line-height: 40px;
+    text-transform: uppercase;
+    color: #001c38;
+    text-align: center;
+}
+
+.frontierco_page_selection select{
+   font-size: 20px; 
+   height: 40px; 
+   width: 100%; 
+   max-width: 100%; 
+   text-align: center; 
+   display: block; 
+   text-transform: uppercase;
+   background-color: #D2A04A;
+   color: #001c38;
+}
+
+.frontierco_page_selection select:hover{
+   color: #001c38;
+}
+
+.frontierco_page_content #sortable{
+
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #D2A04A;
+
+}
+
+.frontierco_page_content #sortable li{ 
+    display:block; 
+    text-align:center; 
+    font-size:16px; 
+    line-height:30px; 
+    cursor: grab; 
+    background-color:#001c38; 
+    color:#D2A04A; 
+}
+
+.frontierco_page_content #sortable li span{ text-transform:uppercase; font-weight:bold; }
+
+.frontierco_page_content #sortable li.ui-sortable-helper{ 
+    cursor:grabbing; 
+}
+
