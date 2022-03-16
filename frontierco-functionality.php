@@ -9,7 +9,7 @@
  * that starts the plugin.
  *
  * @link              https://www.kri8it.com
- * @since             1.0.0
+ * @since             1.0.1
  * @package           Frontierco_Functionality
  *
  * @wordpress-plugin
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.0.0' );
+define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.0.1' );
 
 /**
  * The code that runs during plugin activation.
@@ -102,10 +102,10 @@ function frontierco_functionality_check_for_update(){
             'requires'           => '5.0',
             'tested'             => '5.7',
             'readme'             => 'README.md',
-            'version'            => '1.0.0'
+            'version'            => '1.0.1'
         );
 
-        new fincon_updater( $config );
+        new Frontierco_Functionality_Updater( $config );
 
 }
 
