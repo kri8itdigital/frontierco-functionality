@@ -1,3 +1,7 @@
+= 1.0.2 - May 12, 2022 = 
+* Feature Release: Sort Products within Category
+* Feature Release: Hide Products on sale within Category
+
 = 1.0.1 - March 16, 2022 =
 * Github Deployment Release
 

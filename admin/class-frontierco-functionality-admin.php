@@ -109,27 +109,6 @@ class Frontierco_Functionality_Admin {
 
 
 	/* */	
-	public function get_settings_pages($settings){
-
-
-		include plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-frontierco-functionality-settings.php';
-
-		$settings[] = new Frontierco_Functionality_Settings();
-
-
-		return $settings;
-
-	}
-
-
-
-
-
-
-
-
-
-	/* */	
 	public function admin_menu(){
 
 		/* EXTEND PRODUCTS MENU FOR SORTING */
@@ -138,10 +117,22 @@ class Frontierco_Functionality_Admin {
 			add_submenu_page(
 				'edit.php?post_type=product', 
 				'FrontierCo Product Sort', 
-				'Product Sort', 
+				'FC Product Sort', 
 				'edit_users', 
 				'frontierco-product-sort', 
 				array($this, 'product_sort_menu')
+			);
+
+
+
+
+			add_submenu_page(
+				'edit.php?post_type=product', 
+				'FrontierCo Hide Sale Items', 
+				'FC Hide Sale Items', 
+				'edit_users', 
+				'frontierco-hide-sale-items', 
+				array($this, 'hide_sale_items')
 			);
 
 		endif;
@@ -196,12 +187,16 @@ class Frontierco_Functionality_Admin {
 				if(jQuery('#sortable').length){
 					jQuery('#sortable').sortable(
 						{
-							'update' : function(e, ui) {								
+							'update' : function(e, ui) {	
+								jQuery('#frontieroverlay').addClass('show');
+
 								jQuery.post( ajaxurl, {
 									action: 'frontierco_update_product_order',
 									order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
 									category: jQuery('#categorySelect').val()
-								});
+								}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
+
+								
 							}
 						}
 					);
@@ -227,7 +222,13 @@ class Frontierco_Functionality_Admin {
 
 						<?php foreach($_TERMS as $_TERM): ?>
 
-							<option <?php selected($_SELECTED, $_TERM->slug); ?>value="<?php echo $_TERM->slug; ?>"><?php echo $_TERM->name; ?></option>
+						<?php 
+
+						$_DISPLAY = FRONTIERCO::get_product_display_name($_TERM);
+
+						?>
+
+							<option <?php selected($_SELECTED, $_TERM->slug); ?>value="<?php echo $_TERM->slug; ?>"><?php echo $_DISPLAY; ?></option>
 
 						<?php endforeach; ?>
 					</select>
@@ -256,6 +257,93 @@ class Frontierco_Functionality_Admin {
 		</div>
 
 		<?php
+	}
+
+
+
+
+
+
+	public function hide_sale_items(){
+
+
+		$_TERMS = FRONTIERCO::get_product_cats();
+
+		?>
+
+		<script type="text/javascript">
+		
+			jQuery(document).ready(function(){
+
+
+				jQuery('.hide_sale_changer').on('change', function(){
+					jQuery('#frontieroverlay').addClass('show');
+					
+					jQuery.post( ajaxurl, {
+						action: 'frontierco_update_hide_sale',
+						term: jQuery(this).attr('data-item'),
+						show: jQuery(this).val()
+					}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
+				});
+
+				jQuery('.frontierco_update_hide_sale_all').on('click', function(){
+					jQuery('#frontieroverlay').addClass('show');
+					
+					jQuery.post( ajaxurl, {
+						action: 'frontierco_update_hide_sale_all',
+						show: jQuery(this).attr('data-value')
+					}).done(function(){ 
+
+						setTimeout(function(){window.location.reload(true);}, 3000);
+						
+
+					});
+				});
+
+
+			});
+
+		</script>
+
+		<div class="wrap frontierco_page">
+			<div class="frontierco_page_header">
+				<h2>FrontierCo Hide Sale Items</h2>	
+			</div>
+
+			<div class="fontierco_page_actions">
+				<a class="frontierco_update_hide_sale_all" data-value="yes">Mark All 'Yes'</a> | <a class="frontierco_update_hide_sale_all" data-value="no">Mark All 'No'</a>
+			</div>
+
+			<div class="fontierco_page_content">
+				
+				<?php foreach($_TERMS as $_TERM): ?>
+
+					<?php 
+
+					$_DISPLAY = FRONTIERCO::get_product_display_name($_TERM);
+
+					$_VALUE = get_term_meta($_TERM->term_id, 'frontierco_show_sale_items', true);
+
+					?>
+
+					<div class="category_sale_item">
+						<div class="category_name"><?php echo $_DISPLAY; ?></div>
+						<div class="category_value">
+							<select class="hide_sale_changer" data-item="<?php echo $_TERM->term_id; ?>">
+								<option <?php selected($_VALUE, 'no'); ?> value="no">No</option>
+								<option <?php selected($_VALUE, 'yes'); ?> value="yes">Yes</option>
+							</select>
+						</div>
+					</div>
+
+				<?php endforeach; ?>
+
+			</div>
+
+		</div>
+
+		<?php
+
 	}
 
 
@@ -300,11 +388,66 @@ class Frontierco_Functionality_Admin {
 
 
 	/* */
+	public function frontierco_update_hide_sale(){
+
+		
+		$_ITEM = $_POST['term'];
+		$_SHOW = $_POST['show'];
+
+		$_RESULT = update_term_meta($_ITEM, 'frontierco_show_sale_items', $_SHOW);
+
+
+		exit;
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+	/* */
+	public function frontierco_update_hide_sale_all(){
+
+		$_SHOW = $_POST['show'];
+
+		$_TERMS = FRONTIERCO::get_product_cats();
+
+		foreach($_TERMS as $_TERM):
+
+			$_ITEM = $_TERM->term_id;
+
+			update_term_meta($_ITEM, 'frontierco_show_sale_items', $_SHOW);
+
+		endforeach;
+
+		sleep(5);
+
+
+		exit;
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+	/* */
 	public function parse_pre_query($_QUERY){
 
 		if(is_product_category()):
 
-			//$_QUERY->set( 'post_type', array( 'product', 'product_variation' ));
 
 			$_TAX = get_queried_object();
 
@@ -317,27 +460,42 @@ class Frontierco_Functionality_Admin {
 
 				if(!is_array($_META_QUERY)): $_META_QUERY = array(); endif;
 
-				$_META_QUERY[]=	array(
-					'cat_ordering'  => array(
-						'relation' => 'OR',
-						array(
-							'key' => $_KEY,
-							'compare' => 'EXISTS'
-							),
-						array(
-							'key' => $_KEY,
-							'compare' => 'NOT EXISTS'
+				if($_QUERY->get('frontierco_cat_ordering') != 'yes'):
+					$_META_QUERY[]=	array(
+						'cat_ordering'  => array(
+							'relation' => 'OR',
+							array(
+								'key' => $_KEY,
+								'compare' => 'EXISTS'
+								),
+							array(
+								'key' => $_KEY,
+								'compare' => 'NOT EXISTS'
+							)
 						)
-					)
-				);
+					);
+
+					$_QUERY->set('frontierco_cat_ordering', 'yes');
+
+					$_QUERY->set('orderby', 'meta_value_num menu_order');
+					$_QUERY->set('order', 'ASC');
+
+
+				endif;
+
+				if(get_term_meta($_TAX->term_id, 'frontierco_show_sale_items', true) == 'yes'):
+					$_QUERY->set('post__not_in', wc_get_product_ids_on_sale());
+				endif;
+
+
 
 				$_QUERY->set('meta_query', $_META_QUERY);
 
-				$_QUERY->set('orderby', 'meta_value_num menu_order');
-				$_QUERY->set('order', 'ASC');
+				
 
 
 			endif;
+
 
 		endif;
 
@@ -350,200 +508,14 @@ class Frontierco_Functionality_Admin {
 
 
 
-	public function plugins_loaded(){
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-frontierco-functionality-elementor.php';
-	}
 
+	/* LOADER INSIDE ADMIN */
+	public function in_admin_header(){
+		?>
 
+		<div id="frontieroverlay"></div>
 
-
-	public function woocommerce_save_product_variation($variation_id, $i){
-		if(!get_option('frontierco_functionality_show_variations_on_front') == 'yes'){
-			return;
-		}
-
-		if(empty($variation_id)) {
-			return;
-		}
-
-		if(!isset($_POST['product_id'])){
-			return;
-		}
-
-		$product_id = absint($_POST['product_id']);
-		$parent_product = wc_get_product( $product_id );
-		if(!$parent_product) {
-			return;
-		}
-
-		if(!isset($_POST['product_id']) || !isset($_POST['product-type']) || !isset($_POST['variable_post_id'])) {
-			return;
-		}
-
-		if(!empty($_POST['variation_title'][$i])){
-			update_post_meta($variation_id,'variation_title', sanitize_text_field($_POST['variation_title'][$i]));
-		} else {
-			update_post_meta($variation_id,'variation_title', '');
-		}
-
-		$variation_ids = $_POST['variable_post_id'];
-		$variation_order = $_POST['variation_menu_order'];
-
-		$product_id = absint($_POST['product_id']);
-		$parent_product = wc_get_product( $product_id );
-		if(!$parent_product) {
-			return;
-		}
-
-		$parent_product_order = $parent_product->get_menu_order();
-		$parent_product_status = $parent_product->get_status();
-
-		foreach ($variation_ids as $index => $variation_id) {
-
-			$variation = new WC_Product_Variation($variation_id);
-			if(!$variation) {
-				continue;
-			}
-
-			if($parent_product_status !== "auto-draft" && $parent_product_status !== "draft") {
-				$variation->set_status( $parent_product->get_status() );
-			} else {
-				$variation->set_status( 'private' );
-			}
-
-			$variation->save();
-
-			delete_post_meta($variation_id, 'frontierco_variation_updated');
-		}
-
-		$this->frontierco_update_variations(false);
-
-	}
-
-
-	public function transition_post_status($new_status, $old_status, $post){
-
-		if(!get_option('frontierco_functionality_show_variations_on_front') == 'yes'){
-			return;
-		}
-
-		if(!in_array( $post->post_type, array( 'product') ) ) {
- 			return;
- 		}
-
- 		if(!isset($post->ID) || empty($post->ID)) {
- 			return;
- 		}
-
- 		$product_id = $post->ID;
-
-		$parent_product = wc_get_product( $product_id );
-		if(!$parent_product) {
-			return;
-		}
-
-		if(!$parent_product->is_type('variable')) {
-			return;
-		}
-
-		$variation_ids = $parent_product->get_children();
-		if(empty($variation_ids)) {
-			return;
-		}
-
-		foreach ($variation_ids as $index => $variation_id) {
-
-			$variation = new WC_Product_Variation($variation_id);
-			if(!$variation) {
-				continue;
-			}
-
-			delete_post_meta($variation_id, 'frontierco_variation_updated');
-		}
-
-		$this->frontierco_update_variations(false);
-	}
-
-
-
-
-	function frontierco_update_variations(){
-
-		$_THE_VARIATION = get_option('frontierco_functionality_variation_attribute');
-
-
-		$args = array(
-		   	'post_type' => 'product_variation',
-		   	'posts_per_page' => -1,
-		   	'post_status' => 'any',
-	   	);
-
-	   	$posts = get_posts($args);
-		foreach ($posts as $post) {
-
-			$variation_id = $post->ID;
-			$parent_product_id = wp_get_post_parent_id( $variation_id );
-	        if( !$parent_product_id ) {
-	        	continue;
-        	} 
-
-        	$parent_product = wc_get_product( $parent_product_id );
-			if(!$parent_product) {
-				continue;
-			}
-
-			$checkUpdated = get_post_meta($variation_id, 'frontierco_variation_updated', true);
-			if($checkUpdated) {
-				continue;
-			}
-
-			update_post_meta($variation_id, 'frontierco_variation_updated', true);
-
-			$variation = new WC_Product_Variation($variation_id);
-			if(!$variation) {
-				return;
-			}
-
-			$taxonomies = array(
-                'product_cat',
-                'product_tag'
-            );
-
-            $taxonomies = apply_filters( 'woocommerce_single_variations_taxonomies', $taxonomies );
-
-            foreach( $taxonomies as $taxonomy ) {
-                $terms = (array) wp_get_post_terms( $parent_product_id, $taxonomy, array("fields" => "ids") );
-                wp_set_post_terms( $variation_id, $terms, $taxonomy );
-
-            }
-
-			$attributes = $variation->get_variation_attributes();
-            if(!empty($attributes)){
-                foreach ($attributes as $key => $term) {
-
-                    $attr_tax = urldecode( str_replace('attribute_', '', $key) );
-
-                    if($_THE_VARIATION == $attr_tax){                    
-	                    wp_set_post_terms($variation_id, $term, $attr_tax);
-	                    
-	                }
-                }
-            }
-
-            $parent_product_status = $parent_product->get_status();
-            if($parent_product_status !== "auto-draft" && $parent_product_status !== "draft") {
-            	$variation->set_status( $parent_product->get_status() );
-            } else {
-				$variation->set_status( 'private' );
-			}
-
-            $dateCreated = $parent_product->get_date_created();
-
-            $variation->set_date_created($dateCreated);
-            $variation->save();
-
-        }
-
+		<?php
 	}
 
 }

@@ -3,6 +3,29 @@
  * included in this file.
  */
 
+#frontieroverlay{
+    position: fixed;
+    width: 100%;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: rgba(0,0,0,0.75);
+    z-index: 99999;
+    background-image: url('../images/loading.gif');
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: .3s all;
+}
+
+#frontieroverlay.show{
+    display: block;
+    visibility: visible;
+    opacity: 100;
+}
+
 .frontierco_page{
     padding: 20px;
     margin: 20px;
@@ -65,3 +88,15 @@
     cursor:grabbing; 
 }
 
+.category_sale_item{
+    padding: 10px;
+}
+
+.category_sale_item:nth-of-type(odd){ background-color:dimgray; }
+.category_sale_item > div{ display:inline-block; width: 49%; }
+.category_sale_item .category_name{ font-weight:bold; color: #D2A04A; font-size:20px; }
+.hide_sale_changer{ width:100%; max-width: 100% !important; text-align:center; }
+
+.frontierco_update_hide_sale_all{background-color:#001c38; cursor: pointer; display:inline-block; font-size:20px; text-transform:uppercase; line-height:40px; padding:0 20px; color: #D2A04A; }
+
+.fontierco_page_actions{ margin-bottom:20px; border-bottom:1px solid #D2A04A; padding-bottom:20px; text-align:center; }

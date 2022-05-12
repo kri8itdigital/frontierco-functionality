@@ -43,6 +43,28 @@ class FRONTIERCO{
 	}
 
 
+	public static function get_product_display_name($_TERM){
+
+		$prod_cat_ancestors = get_ancestors($_TERM->term_id, 'product_cat');
+
+		$tree = array();
+	
+		$prod_cat_ancestors = array_reverse($prod_cat_ancestors);										
+
+		foreach($prod_cat_ancestors as $_PA):
+			$parent_term = get_term($_PA, 'product_cat');
+			$tree[] = $parent_term->name;
+		endforeach;
+
+		$tree[] = $_TERM->name;
+
+		$_DISPLAY = implode(' > ', $tree);
+
+		return $_DISPLAY;
+
+	}
+
+
 	public static function get_products_from_cat($_CAT_SLUG){
 
 		$_ARGS = array(
@@ -62,7 +84,7 @@ class FRONTIERCO{
 					)
 				)
 			),
-			'orderby' => 'meta_value menu_order',
+			'orderby' => array('meta_value_num' => 'DESC', 'menu_order' => 'ASC', 'title' => 'ASC'),
 			'order' => 'ASC'
 
 		);

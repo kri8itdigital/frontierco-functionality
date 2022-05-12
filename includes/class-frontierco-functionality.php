@@ -70,7 +70,7 @@ class Frontierco_Functionality {
 		if ( defined( 'FRONTIERCO_FUNCTIONALITY_VERSION' ) ) {
 			$this->version = FRONTIERCO_FUNCTIONALITY_VERSION;
 		} else {
-			$this->version = '1.0.1';
+			$this->version = '1.0.2';
 		}
 		$this->plugin_name = 'frontierco-functionality';
 
@@ -162,17 +162,16 @@ class Frontierco_Functionality {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
-		//$this->loader->add_filter( 'woocommerce_get_settings_pages', $plugin_admin, 'get_settings_pages' );
-
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
 
 		$this->loader->add_action( 'wp_ajax_frontierco_update_product_order', $plugin_admin, 'frontierco_update_product_order'  );
+		$this->loader->add_action( 'wp_ajax_frontierco_update_hide_sale', $plugin_admin, 'frontierco_update_hide_sale'  );
+		$this->loader->add_action( 'wp_ajax_frontierco_update_hide_sale_all', $plugin_admin, 'frontierco_update_hide_sale_all'  );
 
-		//$this->loader->add_action( 'woocommerce_save_product_variation', $plugin_admin, 'woocommerce_save_product_variation', 9999, 2 );
-		//$this->loader->add_action( 'transition_post_status', $plugin_admin, 'transition_post_status', 9999, 3 );
+		$this->loader->add_action( 'pre_get_posts', $plugin_admin, 'parse_pre_query', 999, 1 );
+		$this->loader->add_action( 'parse_query', $plugin_admin, 'parse_pre_query', 999, 1 );
 
-		$this->loader->add_action( 'pre_get_posts', $plugin_admin, 'parse_pre_query', 99999, 1 );
-		$this->loader->add_action( 'parse_query', $plugin_admin, 'parse_pre_query', 99999, 1 );
+		$this->loader->add_action( 'in_admin_header', $plugin_admin, 'in_admin_header', 99999, 1 );
 	}
 
 	/**
@@ -188,11 +187,6 @@ class Frontierco_Functionality {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
-		$this->loader->add_action('plugins_loaded', $plugin_public, 'plugins_loaded', 99999);
-		$this->loader->add_action('elementor/elements/categories_registered', $plugin_public, 'categories_registered', 99999, 1);
-
-		//$this->loader->add_action( 'woocommerce_product_query', $plugin_public, 'woocommerce_product_query', 999, 1 );
 
 	}
 
