@@ -16,7 +16,7 @@
  * Plugin Name:       FrontierCo Functionality
  * Plugin URI:        https://www.kri8it.com
  * Description:       This plugin adds FrontierCo specific functionality and requirements.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Author:            Hilton Moore
  * Author URI:        https://www.kri8it.com
  * License:           GPL-2.0+
