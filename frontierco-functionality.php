@@ -16,7 +16,7 @@
  * Plugin Name:       FrontierCo Functionality
  * Plugin URI:        https://www.kri8it.com
  * Description:       This plugin adds FrontierCo specific functionality and requirements.
- * Version:           1.1.2
+ * Version:           1.2.0
  * Author:            Hilton Moore
  * Author URI:        https://www.kri8it.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.1.2' );
+define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.2.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -92,7 +92,7 @@ function frontierco_functionality_check_for_update(){
 
       $config = array(
             'slug'               => plugin_basename( __FILE__ ),
-            'proper_folder_name' => 'fincon-woocommerce-json',
+            'proper_folder_name' => 'frontierco-functionality',
             'api_url'            => 'https://api.github.com/repos/kri8itdigital/frontierco-functionality',
             'raw_url'            => 'https://raw.github.com/kri8itdigital/frontierco-functionality/master',
             'github_url'         => 'https://github.com/kri8itdigital/frontierco-functionality',
@@ -102,7 +102,7 @@ function frontierco_functionality_check_for_update(){
             'requires'           => '5.0',
             'tested'             => '5.7',
             'readme'             => 'README.md',
-            'version'            => '1.1.2'
+            'version'            => '1.2.0'
         );
 
         new Frontierco_Functionality_Updater( $config );

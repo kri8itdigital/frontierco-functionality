@@ -1,3 +1,6 @@
+= 1.2.0 - May 19, 2022 = 
+* Production Release
+
 = 1.1.2 - May 19, 2022 = 
 * Feature Release - Product thumbnails included in Sorting screen.
 
