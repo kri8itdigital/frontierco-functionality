@@ -100,7 +100,7 @@ function frontierco_functionality_check_for_update(){
             'homepage'           => 'https://github.com/kri8itdigital/frontierco-functionality',
             'sslverify'          => true,
             'requires'           => '5.0',
-            'tested'             => '5.7',
+            'tested'             => '5.9.3',
             'readme'             => 'README.md',
             'version'            => '1.2.0'
         );
