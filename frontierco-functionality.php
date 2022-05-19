@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.2.0' );
+define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.2.1' );
 
 /**
  * The code that runs during plugin activation.
@@ -102,7 +102,7 @@ function frontierco_functionality_check_for_update(){
             'requires'           => '5.0',
             'tested'             => '5.9.3',
             'readme'             => 'README.md',
-            'version'            => '1.2.0'
+            'version'            => '1.2.1'
         );
 
         new Frontierco_Functionality_Updater( $config );
