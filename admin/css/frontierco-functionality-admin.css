@@ -100,3 +100,8 @@
 .frontierco_update_hide_sale_all{background-color:#001c38; cursor: pointer; display:inline-block; font-size:20px; text-transform:uppercase; line-height:40px; padding:0 20px; color: #D2A04A; }
 
 .fontierco_page_actions{ margin-bottom:20px; border-bottom:1px solid #D2A04A; padding-bottom:20px; text-align:center; }
+
+.sort_item_container{ padding:10px 0; vertical-align:middle; display: inline-block; position: relative;}
+.sort_item_container .sort_item_image{ display:inline-block; margin-right: 10px; vertical-align:middle;}
+.sort_item_container .sort_item_image img{ max-width:75px; }
+.sort_item_container .sort_item_title{ display:inline-block;vertical-align:middle; }

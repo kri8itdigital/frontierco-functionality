@@ -245,7 +245,16 @@ class Frontierco_Functionality_Admin {
 
 							<?php $_THE_PROD = wc_get_product($_PROD->ID); ?>
 
-							<li id="sort_<?php echo $_PROD->ID; ?>">#<?php echo $_PROD->ID; ?><span>: <?php echo $_THE_PROD->get_name(); ?></span> (<?php echo $_THE_PROD->get_sku(); ?>)</li>
+							<li id="sort_<?php echo $_PROD->ID; ?>">
+								<div class="sort_item_container">
+									<div class="sort_item_image">
+										<img src="<?php echo wp_get_attachment_url( $_THE_PROD->get_image_id() ); ?>" />
+									</div>
+									<div class="sort_item_title">
+										#<?php echo $_PROD->ID; ?><span>: <?php echo $_THE_PROD->get_name(); ?></span> (<?php echo $_THE_PROD->get_sku(); ?>)
+									</div>
+								</div>
+							</li>
 
 						<?php endforeach; ?>
 
