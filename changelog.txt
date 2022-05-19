@@ -1,3 +1,6 @@
+= 1.2.2 - May 19, 2022 = 
+* Fix Release - wordpress plugin versioning
+
 = 1.2.1 - May 19, 2022 = 
 * Fix Release - wordpress tested versioning
 
