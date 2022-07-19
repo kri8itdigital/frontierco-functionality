@@ -251,7 +251,7 @@ class Frontierco_Functionality_Admin {
 										<img src="<?php echo wp_get_attachment_url( $_THE_PROD->get_image_id() ); ?>" />
 									</div>
 									<div class="sort_item_title">
-										#<?php echo $_PROD->ID; ?><span>: <?php echo $_THE_PROD->get_name(); ?></span> (<?php echo $_THE_PROD->get_sku(); ?>)
+										#<?php echo $_PROD->ID; ?><span>: <?php echo $_THE_PROD->get_name(); ?></span> (<?php echo $_THE_PROD->get_sku(); ?>) | <?php echo $_THE_PROD->get_price_html(); ?>
 									</div>
 								</div>
 							</li>
@@ -455,8 +455,7 @@ class Frontierco_Functionality_Admin {
 	/* */
 	public function parse_pre_query($_QUERY){
 
-		if(is_product_category()):
-
+		if(is_product_category() && !is_admin()):
 
 			$_TAX = get_queried_object();
 
