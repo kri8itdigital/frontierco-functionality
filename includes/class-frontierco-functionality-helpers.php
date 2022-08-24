@@ -70,6 +70,7 @@ class FRONTIERCO{
 		$_ARGS = array(
 			'posts_per_page' 	=> '-1',
 			'post_type' 		=> 'product',
+			'post_status'    	=> array( 'publish'),
 			'product_cat'    	=> $_CAT_SLUG,
 			'meta_query'		=> array(
 				'cat_ordering'  => array(
@@ -84,8 +85,7 @@ class FRONTIERCO{
 					)
 				)
 			),
-			'orderby' => array('meta_value_num' => 'DESC', 'menu_order' => 'ASC', 'title' => 'ASC'),
-			'order' => 'ASC'
+			'orderby' => array('meta_value_num' => 'ASC', 'menu_order' => 'ASC'),
 
 		);
 

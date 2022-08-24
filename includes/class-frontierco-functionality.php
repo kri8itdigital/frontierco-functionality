@@ -70,7 +70,7 @@ class Frontierco_Functionality {
 		if ( defined( 'FRONTIERCO_FUNCTIONALITY_VERSION' ) ) {
 			$this->version = FRONTIERCO_FUNCTIONALITY_VERSION;
 		} else {
-			$this->version = '1.2.3';
+			$this->version = '1.3.0';
 		}
 		$this->plugin_name = 'frontierco-functionality';
 
