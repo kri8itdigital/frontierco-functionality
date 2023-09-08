@@ -114,27 +114,35 @@ class Frontierco_Functionality_Admin {
 		/* EXTEND PRODUCTS MENU FOR SORTING */
 		if (FRONTIERCO::is_woocommerce_active()):
 
+
+			
 			add_submenu_page(
 				'edit.php?post_type=product', 
-				'FrontierCo Product Sort', 
-				'FC Product Sort', 
-				'edit_users', 
-				'frontierco-product-sort', 
-				array($this, 'product_sort_menu')
+				'FrontierCo Product Sort (CAT)', 
+				'FC Product Sort (CAT)', 
+				'manage_woocommerce', 
+				'frontierco-product-sort-cat', 
+				array($this, 'product_sort_menu_cat')
 			);
 
-
-
+			add_submenu_page(
+				'edit.php?post_type=product', 
+				'FrontierCo Product Sort (TAG)', 
+				'FC Product Sort (TAG)', 
+				'manage_woocommerce', 
+				'frontierco-product-sort-tag', 
+				array($this, 'product_sort_menu_tag')
+			);
 
 			add_submenu_page(
 				'edit.php?post_type=product', 
 				'FrontierCo Hide Sale Items', 
 				'FC Hide Sale Items', 
-				'edit_users', 
+				'manage_woocommerce', 
 				'frontierco-hide-sale-items', 
 				array($this, 'hide_sale_items')
 			);
-
+			
 		endif;
 
 	}
@@ -148,7 +156,7 @@ class Frontierco_Functionality_Admin {
 
 
 	/* */
-	public function product_sort_menu(){
+	public function product_sort_menu_cat(){
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
 
@@ -158,9 +166,9 @@ class Frontierco_Functionality_Admin {
 
 		$_PRODUCTS = false;
 
-		if(isset($_GET['category'])):
+		if(isset($_GET['sort-category'])):
 
-			$_SELECTED = $_GET['category'];
+			$_SELECTED = $_GET['sort-category'];
 			$_DO_LIST = true;
 			$_PRODUCTS = FRONTIERCO::get_products_from_cat($_SELECTED);
 
@@ -172,10 +180,12 @@ class Frontierco_Functionality_Admin {
 
 		?>
 
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 		<script type="text/javascript">
 		
 			jQuery(document).ready(function(){
-
 
 				jQuery('#categorySelect').on('change', function(){
 
@@ -183,7 +193,9 @@ class Frontierco_Functionality_Admin {
 
 				});
 
+				jQuery('#categorySelect').select2();
 
+				/*
 				if(jQuery('#sortable').length){
 					jQuery('#sortable').sortable(
 						{
@@ -191,7 +203,7 @@ class Frontierco_Functionality_Admin {
 								jQuery('#frontieroverlay').addClass('show');
 
 								jQuery.post( ajaxurl, {
-									action: 'frontierco_update_product_order',
+									action: 'frontierco_update_product_order_cat',
 									order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
 									category: jQuery('#categorySelect').val()
 								}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
@@ -201,6 +213,25 @@ class Frontierco_Functionality_Admin {
 						}
 					);
 				}
+				*/
+
+				if(jQuery('#sortable').length){
+					jQuery('#sortable').sortable();
+				}
+
+
+				jQuery('#SaveSort').on('click', function(){
+
+					jQuery('#frontieroverlay').addClass('show');
+
+					jQuery.post( ajaxurl, {
+						action: 'frontierco_update_product_order_cat',
+						order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
+						category: jQuery('#categorySelect').val()
+					}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
+
+
+				});
 
 
 			});
@@ -209,24 +240,21 @@ class Frontierco_Functionality_Admin {
 
 		<div class="wrap frontierco_page">
 			<div class="frontierco_page_header">
-				<h2>FrontierCo Product Sort</h2>	
+				<h2>FrontierCo Product Sort (Cat)</h2>	
 			</div>
 
 			<div class="frontierco_page_selection">
-				<form id="categoryForm" method="get">
+				<form id="categoryForm" method="get" action="edit.php?post_type=product&page=frontierco-product-sort-cat">
 					<input type="hidden" name="post_type" value="product" />
-					<input type="hidden" name="page" value="frontierco-product-sort" />
-					<select id="categorySelect" name="category">
+					<input type="hidden" name="page" value="frontierco-product-sort-cat" />
+
+					<select id="categorySelect" name="sort-category">
 
 						<option value="">- Select a Product Category -</option>
 
 						<?php foreach($_TERMS as $_TERM): ?>
 
-						<?php 
-
-						$_DISPLAY = FRONTIERCO::get_product_display_name($_TERM);
-
-						?>
+						<?php  $_DISPLAY = FRONTIERCO::get_cat_display_name($_TERM); ?>
 
 							<option <?php selected($_SELECTED, $_TERM->slug); ?>value="<?php echo $_TERM->slug; ?>"><?php echo $_DISPLAY; ?></option>
 
@@ -238,7 +266,7 @@ class Frontierco_Functionality_Admin {
 			<?php if($_DO_LIST): ?>
 
 				<div class="frontierco_page_content">
-					
+					<?php if(is_array($_PRODUCTS) && count($_PRODUCTS)> 0): ?>
 					<ul id="sortable">
 
 						<?php foreach($_PRODUCTS as $_PROD): ?>
@@ -260,7 +288,185 @@ class Frontierco_Functionality_Admin {
 
 					</ul>
 
+
+						
+					<?php else: ?>
+
+						<p class="frontierco_error">No Products Found</p>
+
+					<?php endif; ?>
+
 				</div>
+
+				<?php if(is_array($_PRODUCTS) && count($_PRODUCTS)> 0): ?>
+					<div class="frontierco_page_save">
+						
+						<a class="frontierco_save_sort_btn" id="SaveSort">SAVE ORDER</a>
+
+					</div>
+				<?php endif; ?>
+
+			<?php endif; ?>
+		</div>
+
+		<?php
+	}
+
+
+
+
+	/* */
+	public function product_sort_menu_tag(){
+
+		wp_enqueue_script( 'jquery-ui-sortable' );
+
+		$_TERMS = FRONTIERCO::get_product_tags();
+
+		$_DO_LIST = false;
+
+		$_PRODUCTS = false;
+
+		if(isset($_GET['sort-tag'])):
+
+			$_SELECTED = $_GET['sort-tag'];
+			$_DO_LIST = true;
+			$_PRODUCTS = FRONTIERCO::get_products_from_tag($_SELECTED);
+
+		else:
+
+			$_SELECTED = '';
+
+		endif;
+
+		?>
+
+		<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+		<script type="text/javascript">
+		
+			jQuery(document).ready(function(){
+
+
+				jQuery('#tagSelect').on('change', function(){
+
+					jQuery('#tagForm').submit();
+
+				});
+
+				jQuery('#tagSelect').select2();
+
+				/*
+				if(jQuery('#sortable').length){
+					jQuery('#sortable').sortable(
+						{
+							'update' : function(e, ui) {	
+								jQuery('#frontieroverlay').addClass('show');
+
+								jQuery.post( ajaxurl, {
+									action: 'frontierco_update_product_order_tag',
+									order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
+									tag: jQuery('#tagSelect').val()
+								}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
+
+								
+							}
+						}
+					);
+				}
+				*/
+
+				if(jQuery('#sortable').length){
+
+					jQuery('#sortable').sortable();
+
+				}
+
+
+				jQuery('#SaveSort').on('click', function(){
+
+					jQuery('#frontieroverlay').addClass('show');
+
+					jQuery.post( ajaxurl, {
+						action: 'frontierco_update_product_order_tag',
+						order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
+						tag: jQuery('#tagSelect').val()
+					}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
+
+
+				});
+
+
+			});
+
+		</script>
+
+		<div class="wrap frontierco_page">
+			<div class="frontierco_page_header">
+				<h2>FrontierCo Product Sort (Tag)</h2>	
+			</div>
+
+			<div class="frontierco_page_selection">
+				<form id="tagForm" method="get">
+					<input type="hidden" name="post_type" value="product" />
+					<input type="hidden" name="page" value="frontierco-product-sort-tag" />
+					<select id="tagSelect" name="sort-tag">
+
+						<option value="">- Select a Product Tag -</option>
+
+						<?php foreach($_TERMS as $_TERM): ?>
+
+						<?php $_DISPLAY = FRONTIERCO::get_tag_display_name($_TERM); ?>
+
+							<option <?php selected($_SELECTED, $_TERM->slug); ?>value="<?php echo $_TERM->slug; ?>"><?php echo $_DISPLAY; ?></option>
+
+						<?php endforeach; ?>
+					</select>
+				</form>
+			</div>
+
+			<?php if($_DO_LIST): ?>
+
+				<div class="frontierco_page_content">
+					
+					<?php if(is_array($_PRODUCTS) && count($_PRODUCTS)> 0): ?>
+						<ul id="sortable">
+
+							<?php foreach($_PRODUCTS as $_PROD): ?>
+
+								<?php $_THE_PROD = wc_get_product($_PROD->ID); ?>
+
+								<li id="sort_<?php echo $_PROD->ID; ?>">
+									<div class="sort_item_container">
+										<div class="sort_item_image">
+											<img src="<?php echo wp_get_attachment_url( $_THE_PROD->get_image_id() ); ?>" />
+										</div>
+										<div class="sort_item_title">
+											#<?php echo $_PROD->ID; ?><span>: <?php echo $_THE_PROD->get_name(); ?></span> (<?php echo $_THE_PROD->get_sku(); ?>) | <?php echo $_THE_PROD->get_price_html(); ?>
+										</div>
+									</div>
+								</li>
+
+							<?php endforeach; ?>
+
+						</ul>
+
+					<?php else: ?>
+
+						<p class="frontierco_error">No Products Found</p>
+
+					<?php endif; ?>
+
+				</div>
+
+
+				<?php if(is_array($_PRODUCTS) && count($_PRODUCTS)> 0): ?>
+					<div class="frontierco_page_save">
+						
+						<a class="frontierco_save_sort_btn" id="SaveSort">SAVE ORDER</a>
+
+					</div>
+				<?php endif; ?>
 
 			<?php endif; ?>
 		</div>
@@ -279,6 +485,8 @@ class Frontierco_Functionality_Admin {
 		$_TERMS = FRONTIERCO::get_product_cats();
 
 		?>
+
+		
 
 		<script type="text/javascript">
 		
@@ -329,7 +537,7 @@ class Frontierco_Functionality_Admin {
 
 					<?php 
 
-					$_DISPLAY = FRONTIERCO::get_product_display_name($_TERM);
+					$_DISPLAY = FRONTIERCO::get_cat_display_name($_TERM);
 
 					$_VALUE = get_term_meta($_TERM->term_id, 'frontierco_show_sale_items', true);
 
@@ -364,11 +572,44 @@ class Frontierco_Functionality_Admin {
 
 
 	/* */
-	public function frontierco_update_product_order(){
+	public function frontierco_update_product_order_cat(){
 
 		$_DATA = explode("&", $_POST['order']);
 
 		$_KEY = 'cat_ordering_'.$_POST['category'];
+
+		$_COUNT = 1;
+
+		foreach($_DATA as $_ITEM):
+
+			$_ID = (int)str_replace("sort=", "", $_ITEM);
+
+			update_post_meta($_ID, $_KEY, $_COUNT);
+
+			$_COUNT++;
+
+		endforeach;
+
+		exit;
+
+
+
+	}
+
+
+
+
+
+
+
+
+
+	/* */
+	public function frontierco_update_product_order_tag(){
+
+		$_DATA = explode("&", $_POST['order']);
+
+		$_KEY = 'tag_ordering_'.$_POST['tag'];
 
 		$_COUNT = 1;
 
@@ -501,6 +742,57 @@ class Frontierco_Functionality_Admin {
 
 				
 
+
+			endif;
+
+
+		endif;
+
+
+
+
+		if(is_product_tag() && !is_admin()):
+
+
+			$_TAX = get_queried_object();
+
+			$_KEY = 'tag_ordering_'.$_TAX->slug;
+
+			if(!isset($_GET['orderby']) || $_GET['orderby'] == 'menu_order' || $_QUERY->get('orderby') == 'menu_order' || !$_QUERY->get('orderby') || $_QUERY->get('orderby') == ''):
+
+
+				$_META_QUERY = $_QUERY->get('meta_query');
+
+				if(!is_array($_META_QUERY)): $_META_QUERY = array(); endif;
+
+				if($_QUERY->get('frontierco_tag_ordering') != 'yes'):
+					$_META_QUERY[]=	array(
+						'tag_ordering'  => array(
+							'relation' => 'OR',
+							array(
+								'key' => $_KEY,
+								'compare' => 'EXISTS'
+								),
+							array(
+								'key' => $_KEY,
+								'compare' => 'NOT EXISTS'
+							)
+						)
+					);
+
+					$_QUERY->set('frontierco_tag_ordering', 'yes');
+
+					$_QUERY->set('orderby', 'meta_value_num menu_order');
+					$_QUERY->set('order', 'ASC');
+
+
+				endif;
+
+				if(get_term_meta($_TAX->term_id, 'frontierco_show_sale_items', true) == 'yes'):
+					$_QUERY->set('post__not_in', wc_get_product_ids_on_sale());
+				endif;
+
+				$_QUERY->set('meta_query', $_META_QUERY);
 
 			endif;
 

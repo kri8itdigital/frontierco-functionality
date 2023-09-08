@@ -43,7 +43,21 @@ class FRONTIERCO{
 	}
 
 
-	public static function get_product_display_name($_TERM){
+	public static function get_product_tags(){
+
+		$_TERMS = get_terms(
+			array(
+				'taxonomy' => 'product_tag',
+    			'hide_empty' => true,
+			)
+		);
+
+		return $_TERMS;
+
+	}
+
+
+	public static function get_cat_display_name($_TERM){
 
 		$prod_cat_ancestors = get_ancestors($_TERM->term_id, 'product_cat');
 
@@ -53,6 +67,29 @@ class FRONTIERCO{
 
 		foreach($prod_cat_ancestors as $_PA):
 			$parent_term = get_term($_PA, 'product_cat');
+			$tree[] = $parent_term->name;
+		endforeach;
+
+		$tree[] = $_TERM->name;
+
+		$_DISPLAY = implode(' > ', $tree);
+
+		return $_DISPLAY;
+
+	}
+
+
+
+	public static function get_tag_display_name($_TERM){
+
+		$prod_cat_ancestors = get_ancestors($_TERM->term_id, 'product_tag');
+
+		$tree = array();
+	
+		$prod_cat_ancestors = array_reverse($prod_cat_ancestors);										
+
+		foreach($prod_cat_ancestors as $_PA):
+			$parent_term = get_term($_PA, 'product_tag');
 			$tree[] = $parent_term->name;
 		endforeach;
 
@@ -81,6 +118,40 @@ class FRONTIERCO{
 						),
 					array(
 						'key' => 'cat_ordering_'.$_CAT_SLUG,
+						'compare' => 'NOT EXISTS'
+					)
+				)
+			),
+			'orderby' => array('meta_value_num' => 'ASC', 'menu_order' => 'ASC'),
+
+		);
+
+		$_PRODUCTS = get_posts(
+			$_ARGS
+		);
+
+		return $_PRODUCTS;
+
+	}
+
+
+
+	public static function get_products_from_tag($_TAG_SLUG){
+
+		$_ARGS = array(
+			'posts_per_page' 	=> '-1',
+			'post_type' 		=> 'product',
+			'post_status'    	=> array( 'publish'),
+			'product_tag'    	=> $_TAG_SLUG,
+			'meta_query'		=> array(
+				'cat_ordering'  => array(
+					'relation' => 'OR',
+					array(
+						'key' => 'tag_ordering_'.$_TAG_SLUG,
+						'compare' => 'EXISTS'
+						),
+					array(
+						'key' => 'tag_ordering_'.$_TAG_SLUG,
 						'compare' => 'NOT EXISTS'
 					)
 				)

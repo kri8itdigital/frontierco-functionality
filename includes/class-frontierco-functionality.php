@@ -70,7 +70,7 @@ class Frontierco_Functionality {
 		if ( defined( 'FRONTIERCO_FUNCTIONALITY_VERSION' ) ) {
 			$this->version = FRONTIERCO_FUNCTIONALITY_VERSION;
 		} else {
-			$this->version = '1.3.0';
+			$this->version = '1.4.0';
 		}
 		$this->plugin_name = 'frontierco-functionality';
 
@@ -164,7 +164,12 @@ class Frontierco_Functionality {
 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
 
-		$this->loader->add_action( 'wp_ajax_frontierco_update_product_order', $plugin_admin, 'frontierco_update_product_order'  );
+		$this->loader->add_action( 'wp_ajax_frontierco_update_product_order_cat', $plugin_admin, 'frontierco_update_product_order_cat'  );
+		$this->loader->add_action( 'wp_ajax_nopriv_frontierco_update_product_order_cat', $plugin_admin, 'frontierco_update_product_order_cat'  );
+
+		$this->loader->add_action( 'wp_ajax_frontierco_update_product_order_tag', $plugin_admin, 'frontierco_update_product_order_tag'  );
+		$this->loader->add_action( 'wp_ajax_nopriv_frontierco_update_product_order_tag', $plugin_admin, 'frontierco_update_product_order_tag'  );
+
 		$this->loader->add_action( 'wp_ajax_frontierco_update_hide_sale', $plugin_admin, 'frontierco_update_hide_sale'  );
 		$this->loader->add_action( 'wp_ajax_frontierco_update_hide_sale_all', $plugin_admin, 'frontierco_update_hide_sale_all'  );
 

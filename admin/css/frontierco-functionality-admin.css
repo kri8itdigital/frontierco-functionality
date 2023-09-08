@@ -11,7 +11,7 @@
     left: 0;
     background-color: rgba(0,0,0,0.75);
     z-index: 99999;
-    background-image: url('../images/loading.gif');
+    background-image: url('../images/frontierco.gif');
     background-position: center center;
     background-repeat: no-repeat;
     display: none;
@@ -60,6 +60,45 @@
    color: #001c38;
 }
 
+#categoryForm .select2-container--default .select2-selection--single, #tagForm .select2-container--default .select2-selection--single{
+   font-size: 20px; 
+   height: 40px; 
+   width: 100%; 
+   max-width: 100%; 
+   text-align: center; 
+   display: block; 
+   text-transform: uppercase;
+   background-color: #D2A04A;
+   color: #001c38;
+}
+
+#categoryForm .select2-container .select2-selection--single .select2-selection__rendered, #tagForm .select2-container .select2-selection--single .select2-selection__rendered{
+    color: #001c38 !important;
+    padding:0 !important;
+    height:100%;
+}
+
+#categoryForm .select2-container--default .select2-selection--single .select2-selection__arrow, #tagForm .select2-container--default .select2-selection--single .select2-selection__arrow{
+    height:100% !important;
+    top:0 !important;
+}
+
+.select2-dropdown--below{ border-color:inherit !important; box-shadow:none !important; }
+
+.select2-results{
+   background-color: #D2A04A !important;
+   color: #001c38 !important;
+}
+
+.select2-container--default .select2-results__option--selected{
+    background-color:#001c38 !important;
+    color:#fff !important;
+}
+
+.select2-results__option--highlighted{
+    font-style:italic !important; font-weight:bold !important;
+}
+
 .frontierco_page_selection select:hover{
    color: #001c38;
 }
@@ -105,3 +144,26 @@
 .sort_item_container .sort_item_image{ display:inline-block; margin-right: 10px; vertical-align:middle;}
 .sort_item_container .sort_item_image img{ max-width:75px; }
 .sort_item_container .sort_item_title{ display:inline-block;vertical-align:middle; }
+
+.frontierco_page_save{
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #D2A04A;
+    text-align:center;
+}
+
+.frontierco_save_sort_btn{
+    display:inline-block;
+    text-align:center;
+    font-size:18px;
+    line-height:40px;
+    text-transform:uppercase;
+    background-color: #001c38;
+    color: #D2A04A;
+    cursor:pointer;
+    padding:0 20px;
+}
+
+.frontierco_save_sort_btn:hover{
+    color:#fff;
+    }
