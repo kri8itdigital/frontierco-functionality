@@ -1,6 +1,10 @@
+= 1.4.0 - September 08, 2023 = 
+* Feature Release - Product Ordering for Tags.
+* Feature Release - Sorting now saves on button, not on move
+* Feature Release - Sorting Category/Tag now Searchable
+
 = 1.3.0 - August 24, 2022 = 
 * Fix Release - Do not include Private products in sorting.
-
 
 = 1.2.3 - July 18, 2022 = 
 * Fix Release - Do not hide sale products in admin

@@ -1,5 +1,5 @@
 # FrontierCo Functionality
-### Current Version: 1.3.0
+### Current Version: 1.4.0
 
 Plugin to extend Wordpress/Woocommerce with FrontierCo specific functionality.
 
