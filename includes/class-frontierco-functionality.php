@@ -70,7 +70,7 @@ class Frontierco_Functionality {
 		if ( defined( 'FRONTIERCO_FUNCTIONALITY_VERSION' ) ) {
 			$this->version = FRONTIERCO_FUNCTIONALITY_VERSION;
 		} else {
-			$this->version = '1.4.0';
+			$this->version = '2.0.0';
 		}
 		$this->plugin_name = 'frontierco-functionality';
 
@@ -103,6 +103,7 @@ class Frontierco_Functionality {
 		 * HELPER FUNCTIONS
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-frontierco-functionality-helpers.php';
+		
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -163,6 +164,9 @@ class Frontierco_Functionality {
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'admin_menu' );
+		$this->loader->add_action( 'init', $plugin_admin, 'post_types' );
+
+		$this->loader->add_filter( 'woocommerce_get_settings_pages', $plugin_admin, 'woocommerce_get_settings_pages' );
 
 		$this->loader->add_action( 'wp_ajax_frontierco_update_product_order_cat', $plugin_admin, 'frontierco_update_product_order_cat'  );
 		$this->loader->add_action( 'wp_ajax_nopriv_frontierco_update_product_order_cat', $plugin_admin, 'frontierco_update_product_order_cat'  );
@@ -177,6 +181,15 @@ class Frontierco_Functionality {
 		$this->loader->add_action( 'parse_query', $plugin_admin, 'parse_pre_query', 999, 1 );
 
 		$this->loader->add_action( 'in_admin_header', $plugin_admin, 'in_admin_header', 99999, 1 );
+
+		$this->loader->add_action( 'woocommerce_shipping_init', $plugin_admin, 'woocommerce_shipping_init', 99999);
+		$this->loader->add_action( 'woocommerce_shipping_methods', $plugin_admin, 'woocommerce_shipping_methods', 1);
+
+		$this->loader->add_action( 'wp_ajax_frontierco_selected_store_pickup', $plugin_admin, 'frontierco_selected_store_pickup'  );
+		$this->loader->add_action( 'wp_ajax_nopriv_frontierco_selected_store_pickup', $plugin_admin, 'frontierco_selected_store_pickup'  );
+
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'add_meta_boxes', 99999);
+		$this->loader->add_action( 'save_post_storepickup', $plugin_admin, 'save_post', 99999, 1);
 	}
 
 	/**
@@ -192,6 +205,14 @@ class Frontierco_Functionality {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+
+		$this->loader->add_action( 'woocommerce_review_order_after_shipping', $plugin_public, 'woocommerce_review_order_after_shipping', 99);
+
+		$this->loader->add_action( 'woocommerce_after_checkout_validation', $plugin_public, 'woocommerce_after_checkout_validation', 99);
+
+		$this->loader->add_action( 'woocommerce_checkout_update_order_meta', $plugin_public, 'woocommerce_checkout_update_order_meta', 99, 2);
+
+		$this->loader->add_action('woocommerce_checkout_order_created', $plugin_public, 'woocommerce_checkout_order_created', 99, 1);
 
 	}
 

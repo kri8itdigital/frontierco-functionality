@@ -16,7 +16,7 @@
  * Plugin Name:       FrontierCo Functionality
  * Plugin URI:        https://www.kri8it.com
  * Description:       This plugin adds FrontierCo specific functionality and requirements.
- * Version:           1.4.0
+ * Version:           2.0.0
  * Author:            Hilton Moore
  * Author URI:        https://www.kri8it.com
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '1.4.0' );
+define( 'FRONTIERCO_FUNCTIONALITY_VERSION', '2.0.0' );
 
 /**
  * The code that runs during plugin activation.
@@ -102,7 +102,7 @@ function frontierco_functionality_check_for_update(){
             'requires'           => '5.0',
             'tested'             => '6.0.1',
             'readme'             => 'README.md',
-            'version'            => '1.4.0'
+            'version'            => '2.0.0'
         );
 
         new Frontierco_Functionality_Updater( $config );

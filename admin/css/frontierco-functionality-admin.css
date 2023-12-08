@@ -83,19 +83,19 @@
     top:0 !important;
 }
 
-.select2-dropdown--below{ border-color:inherit !important; box-shadow:none !important; }
+.frontierco_page .select2-dropdown--below{ border-color:inherit !important; box-shadow:none !important; }
 
-.select2-results{
+.frontierco_page .select2-results{
    background-color: #D2A04A !important;
    color: #001c38 !important;
 }
 
-.select2-container--default .select2-results__option--selected{
+.frontierco_page .select2-container--default .select2-results__option--selected{
     background-color:#001c38 !important;
     color:#fff !important;
 }
 
-.select2-results__option--highlighted{
+.frontierco_page .select2-results__option--highlighted{
     font-style:italic !important; font-weight:bold !important;
 }
 
@@ -167,3 +167,12 @@
 .frontierco_save_sort_btn:hover{
     color:#fff;
     }
+
+
+
+.frontierco_store_pickup_meta_row{ margin-bottom:10px; }
+.frontierco_store_pickup_meta_row:last-of-type{ margin-bottom:0px; }
+
+.frontierco_store_pickup_meta_row label{ display:block; text-transform:uppercase; font-weight:bold; margin-bottom:5px; color:#001c38; }
+.frontierco_store_pickup_meta_row label sup{ color:red; }
+.frontierco_store_pickup_meta_row input{ display:block; width:100%; }

@@ -108,7 +108,7 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */	
+	/* SORT OUT THE ADMIN MENUS */
 	public function admin_menu(){
 
 		/* EXTEND PRODUCTS MENU FOR SORTING */
@@ -155,7 +155,79 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+	/* SETUP THE STORE PICKUP POST TYPE */	
+	public function post_types(){
+
+		if(get_option('frontierco_functionality_enable_store_pickup')):
+
+			$labels = array(
+		    'name' => _x( 'Store Pickup', 'post type general name', 'frontierco-functionality' ),
+		    'singular_name' => _x( 'Store Pickup', 'post type singular name', 'frontierco-functionality' ),
+		    'add_new' => _x( 'Add New', 'storepickup', 'frontierco-functionality' ),
+		    'add_new_item' => __( 'Add Store Pickup', 'frontierco-functionality' ),
+		    'edit_item' => __( 'Edit Store Pickup', 'frontierco-functionality' ),
+		    'new_item' => __( 'New Store Pickup', 'frontierco-functionality' ),
+		    'view_item' => __( 'View Store Pickup', 'frontierco-functionality' ),
+		    'search_items' => __( 'Search Store Pickups', 'frontierco-functionality' ),
+		    'not_found' =>  __( 'No Store Pickups found', 'frontierco-functionality' ),
+		    'not_found_in_trash' => __( 'No Store Pickups found in Trash', 'frontierco-functionality' ), 
+		    'parent_item_colon' => ''
+		  );
+		  
+		  $rewrite = 'store-pickup';
+		  
+		  $args = array(
+		    'labels' => $labels,
+		    'public' => false,
+		    'publicly_queryable' => true,
+		    'show_ui' => true, 
+		    'query_var' => true,
+		    'rewrite' => array( 'slug' => $rewrite ),
+		    'capability_type' => 'post',
+		    'hierarchical' => false,
+		    'menu_position' => null, 
+		    'menu_icon' => 'dashicons-admin-multisite',
+		    'has_archive' => false, 
+		    'show_in_rest' => false,
+		    'supports' => array('title'),
+    		'taxonomies' => array( 'province'),
+			'map_meta_cap' => true 
+		  );
+		      
+		  register_post_type( 'storepickup', $args );
+
+		endif;
+
+	}
+
+
+
+
+
+
+
+
+
+	/* WOOCOMMERCE SETTINGS PAGE */
+	public function woocommerce_get_settings_pages($_SETTINGS){
+
+		include plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-frontierco-functionality-settings.php';
+
+		$_SETTINGS[] = new Frontierco_Functionality_Settings();
+
+		return $_SETTINGS;
+
+	}
+
+
+
+
+
+
+
+
+
+	/* MENU CALLBACK - CAT */
 	public function product_sort_menu_cat(){
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
@@ -194,26 +266,6 @@ class Frontierco_Functionality_Admin {
 				});
 
 				jQuery('#categorySelect').select2();
-
-				/*
-				if(jQuery('#sortable').length){
-					jQuery('#sortable').sortable(
-						{
-							'update' : function(e, ui) {	
-								jQuery('#frontieroverlay').addClass('show');
-
-								jQuery.post( ajaxurl, {
-									action: 'frontierco_update_product_order_cat',
-									order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
-									category: jQuery('#categorySelect').val()
-								}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
-
-								
-							}
-						}
-					);
-				}
-				*/
 
 				if(jQuery('#sortable').length){
 					jQuery('#sortable').sortable();
@@ -315,7 +367,12 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+
+
+
+
+
+	/* MENU CALLBACK - TAG */
 	public function product_sort_menu_tag(){
 
 		wp_enqueue_script( 'jquery-ui-sortable' );
@@ -355,26 +412,6 @@ class Frontierco_Functionality_Admin {
 				});
 
 				jQuery('#tagSelect').select2();
-
-				/*
-				if(jQuery('#sortable').length){
-					jQuery('#sortable').sortable(
-						{
-							'update' : function(e, ui) {	
-								jQuery('#frontieroverlay').addClass('show');
-
-								jQuery.post( ajaxurl, {
-									action: 'frontierco_update_product_order_tag',
-									order: jQuery('#sortable').sortable('serialize', { key: "sort" }),
-									tag: jQuery('#tagSelect').val()
-								}).done(function(){ jQuery('#frontieroverlay').removeClass('show'); });
-
-								
-							}
-						}
-					);
-				}
-				*/
 
 				if(jQuery('#sortable').length){
 
@@ -479,6 +516,10 @@ class Frontierco_Functionality_Admin {
 
 
 
+
+
+
+	/* MENU CALLBACK - SALES */
 	public function hide_sale_items(){
 
 
@@ -571,7 +612,7 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+	/* AJAX TO UPDATE ORDERING - CAT*/
 	public function frontierco_update_product_order_cat(){
 
 		$_DATA = explode("&", $_POST['order']);
@@ -604,7 +645,7 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+	/* AJAX TO UPDATE ORDERING - TAG*/
 	public function frontierco_update_product_order_tag(){
 
 		$_DATA = explode("&", $_POST['order']);
@@ -637,7 +678,7 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+	/* AJAX TO UPDATE SALE*/
 	public function frontierco_update_hide_sale(){
 
 		
@@ -661,7 +702,7 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+	/* AJAX TO UPDATE SALE*/
 	public function frontierco_update_hide_sale_all(){
 
 		$_SHOW = $_POST['show'];
@@ -693,7 +734,7 @@ class Frontierco_Functionality_Admin {
 
 
 
-	/* */
+	/* FRONTEND HANDLING OF ALL THINGS */
 	public function parse_pre_query($_QUERY){
 
 		if(is_product_category() && !is_admin()):
@@ -816,6 +857,184 @@ class Frontierco_Functionality_Admin {
 		<div id="frontieroverlay"></div>
 
 		<?php
+	}
+
+
+
+
+
+
+
+
+
+	/* INCLUDE OUR SHIPPING METHOD */
+	public function woocommerce_shipping_init(){
+
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-frontierco-functionality-storepickup.php';
+	}
+
+
+
+
+
+
+
+
+
+	/* ADD OUR SHIPPING METHOD */
+	public function woocommerce_shipping_methods($_METHODS){
+
+		if(get_option('frontierco_functionality_enable_store_pickup')):
+
+			$_METHODS['frontierco_store_pickup'] = 'WC_Shipping_FrontierCo_Store_Pickup';
+
+		endif;
+
+		return $_METHODS;
+	}
+
+
+
+
+
+
+
+
+
+	/* AJAX FUNCTION FOR STORE PICKUP DETAILS */
+	public function frontierco_selected_store_pickup(){
+		$_STORE = $_POST['store'];
+
+		$_ARRAY = array(
+			'shipping_address_1' 	=> get_post_meta($_STORE, 'store_pickup_shipping_address_1', true),
+			'shipping_address_2' 	=> get_post_meta($_STORE, 'store_pickup_shipping_address_2', true),
+			'shipping_city' 		=> get_post_meta($_STORE, 'store_pickup_shipping_city', true),
+			'shipping_postcode' 	=> get_post_meta($_STORE, 'store_pickup_shipping_postcode', true),
+			'shipping_country' 		=> get_post_meta($_STORE, 'store_pickup_shipping_country', true),
+			'shipping_state' 		=> get_post_meta($_STORE, 'store_pickup_shipping_state', true)
+		);
+
+		echo json_encode($_ARRAY);
+		die();
+	}
+
+
+
+
+
+
+
+
+
+	/* ADD META BOXES FOR STORE DETAILS */
+	public function add_meta_boxes(){
+
+		add_meta_box(
+			'frontierco_store_pickup_meta',
+			'Store Pickup Details',
+			array($this, 'store_pickup_meta_details'),
+			'storepickup'
+		);
+
+	}
+
+
+
+
+
+
+
+
+
+	/* META CALLBACK FOR DISPLAY */
+	public function store_pickup_meta_details(){
+
+		global $post;
+
+		?>
+
+		<div id="frontierco_store_pickup_meta">
+
+			<div class="frontierco_store_pickup_meta_row">
+				<label for="store_pickup_shipping_address_1"><strong>Shipping Address Line 1<sup>*</sup></strong></label>
+				<input required value="<?php echo get_post_meta($post->ID, 'store_pickup_shipping_address_1', true); ?>" type="text" id="store_pickup_shipping_address_1" name="store_pickup_shipping_address_1" />
+			</div>
+
+			<div class="frontierco_store_pickup_meta_row">
+				<label for="store_pickup_shipping_address_2"><strong>Shipping Address Line 2<sup>*</sup></strong></label>
+				<input required value="<?php echo get_post_meta($post->ID, 'store_pickup_shipping_address_2', true); ?>" type="text" id="store_pickup_shipping_address_2" name="store_pickup_shipping_address_2" />
+			</div>
+			<div class="frontierco_store_pickup_meta_row">
+				<label for="store_pickup_shipping_city"><strong>Shipping Address City<sup>*</sup></strong></label>
+				<input required value="<?php echo get_post_meta($post->ID, 'store_pickup_shipping_city', true); ?>" type="text" id="store_pickup_shipping_city" name="store_pickup_shipping_city" />
+			</div>
+
+			<div class="frontierco_store_pickup_meta_row">
+				<label for="store_pickup_shipping_postcode"><strong>Shipping Address Post Code<sup>*</sup></strong></label>
+				<input required value="<?php echo get_post_meta($post->ID, 'store_pickup_shipping_postcode', true); ?>" type="text" id="store_pickup_shipping_postcode" name="store_pickup_shipping_postcode" />
+			</div>
+
+			<div class="frontierco_store_pickup_meta_row">
+				<label for="store_pickup_shipping_country"><strong>Shipping Address Country<sup>*</sup></strong></label>
+				<input required value="<?php echo get_post_meta($post->ID, 'store_pickup_shipping_country', true); ?>" type="text" id="store_pickup_shipping_country" name="store_pickup_shipping_country" />
+			</div>
+
+			<div class="frontierco_store_pickup_meta_row">
+				<label for="store_pickup_shipping_state"><strong>Shipping Address State<sup>*</sup></strong></label>
+				<input required value="<?php echo get_post_meta($post->ID, 'store_pickup_shipping_state', true); ?>" type="text" id="store_pickup_shipping_state" name="store_pickup_shipping_state" />
+			</div>
+		</div>
+		<?php
+
+	}
+
+
+
+
+
+
+
+
+
+	/* SAVE THE META */
+	public function save_post($_POST_ID){
+
+		update_post_meta(
+			$_POST_ID,
+			'store_pickup_shipping_address_1',
+			$_POST['store_pickup_shipping_address_1']
+		);
+
+		update_post_meta(
+			$_POST_ID,
+			'store_pickup_shipping_address_2',
+			$_POST['store_pickup_shipping_address_2']
+		);
+
+		update_post_meta(
+			$_POST_ID,
+			'store_pickup_shipping_city',
+			$_POST['store_pickup_shipping_city']
+		);
+
+		update_post_meta(
+			$_POST_ID,
+			'store_pickup_shipping_postcode',
+			$_POST['store_pickup_shipping_postcode']
+		);
+
+		update_post_meta(
+			$_POST_ID,
+			'store_pickup_shipping_country',
+			$_POST['store_pickup_shipping_country']
+		);
+
+		update_post_meta(
+			$_POST_ID,
+			'store_pickup_shipping_state',
+			$_POST['store_pickup_shipping_state']
+		);
+
 	}
 
 }

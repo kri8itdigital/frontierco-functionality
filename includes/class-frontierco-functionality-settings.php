@@ -21,7 +21,7 @@ class Frontierco_Functionality_Settings extends WC_Settings_Page {
 
 	public function get_sections() {
 		$sections = array(
-			'' => __( 'Settings', 'frontierco-functionality' ),
+			'' 				=> __( 'Store Pickup Settings', 'frontierco-functionality' ),
 		);
 
 		return apply_filters( 'woocommerce_get_sections_' . $this->id, $sections );
@@ -46,53 +46,47 @@ class Frontierco_Functionality_Settings extends WC_Settings_Page {
 		switch($_CURRENT):
 
 			case '':
-
-				$_ATTRIBUTES = wc_get_attribute_taxonomies();
-
-				$_SELECTION = array();
-
-				foreach($_ATTRIBUTES as $_ATT):
-
-					$_SELECTION[$_ATT->attribute_name] = $_ATT->attribute_label;
-
-				endforeach;
-
+				
 				$_SETTINGS = array(
 					array(
-						'title' => __( 'FrontierCo General Settings', 'frontierco-functionality' ),
+						'title' => __( 'FrontierCo Store Pickup Settings', 'frontierco-functionality' ),
 						'type'  => 'title',
 						'id'    => 'frontierco_settings',
 					),
 					array(
-						'title'         => __( 'Section Options', 'fincon-woocommerce' ),
-						'desc'          => __( 'Show Variations on Frontend', 'fincon-woocommerce' ),
-						'id'            => 'frontierco_functionality_show_variations_on_front',
+						'title'         => __( 'Store Pickup', 'frontierco-functionality' ),
+						'desc'          => __( 'Enable Store Pickup on Frontend', 'frontierco-functionality' ),
+						'id'            => 'frontierco_functionality_enable_store_pickup',
 						'default'       => 'no',
 						'checkboxgroup' => 'start',
 						'type'          => 'checkbox'
 					),
 					array(
-						'desc'          => __( 'Hide Parent Variation', 'fincon-woocommerce' ),
-						'id'            => 'frontierco_functionality_hide_parent_variation',
-						'default'       => 'no',
-						'checkboxgroup' => 'end',
-						'type'          => 'checkbox'
+						'title'         => __( 'Store Pickup Selector Label', 'frontierco-functionality' ),
+						'desc'          => __( 'The text for the label where the store dropdown is presented at checkout.', 'frontierco-functionality' ),
+						'id'            => 'frontierco_functionality_store_pickup_dropdown_label',
+						'default'       => 'Please select a store for pickup',
+						'type'          => 'text'
 					),
 					array(
-							'title' 	=> __('Attribute To Use', 'fincon-woocommerce'),
-							'desc' 		=> __('The attribute to use for showing on the front end', 'fincon-woocommerce' ),
-							'type' 		=> 'select',
-							'default' 	=> '',
-							'id' 		=> 'frontierco_functionality_variation_attribute',
-							'default' 	=> 'None',
-							'options'   => $_SELECTION
+						'title'         => __( 'Store Pickup Selector Placeholder', 'frontierco-functionality' ),
+						'desc'          => __( 'The placeholder for the store dropdown at checkout.', 'frontierco-functionality' ),
+						'id'            => 'frontierco_functionality_store_pickup_dropdown_placeholder',
+						'default'       => 'Please select store',
+						'type'          => 'text'
+					),
+					array(
+						'title'         => __( 'Store Pickup Selector Error', 'frontierco-functionality' ),
+						'desc'          => __( 'The error message if a store pickup location is not selected.', 'frontierco-functionality' ),
+						'id'            => 'frontierco_functionality_store_pickup_dropdown_error',
+						'default'       => 'Kindly select a pickup location to continue',
+						'type'          => 'text'
 					),
 					array(
 						'type' => 'sectionend',
 						'id'   => 'frontierco_settings',
 					),
 				);
-
 			break;
 
 		endswitch;

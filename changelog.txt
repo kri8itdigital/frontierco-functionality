@@ -1,3 +1,6 @@
+= 2.0.0 - December 08, 2023 =
+* Feature Release - Store Pickup.
+
 = 1.4.0 - September 08, 2023 = 
 * Feature Release - Product Ordering for Tags.
 * Feature Release - Sorting now saves on button, not on move
